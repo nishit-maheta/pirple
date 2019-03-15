@@ -37,7 +37,11 @@ var server = http.createServer(function(req,res){
 
       chosenHandler(data,function(statusCode,payload){
         statusCode = typeof(statusCode) == 'number' ? statusCode : 200;
-        var payloadString = typeof(payload) == 'string'? payload : '';
+        payload = typeof(payload) == 'object'? payload : {};
+        var payloadString = JSON.stringify(payload);
+
+        // Set Content type header to JSON 
+        res.setHeader('Content-Type','Application/json');
         res.writeHead(statusCode);
         res.end(payloadString);
         console.log("Returning this response: ",statusCode,payloadString);
@@ -52,7 +56,7 @@ server.listen(3000,function(){
 var handlers = {};
 
 handlers.hello = function(data,callback){
-    callback(200,"Welcome to the API");
+    callback(200,{"message" : "Welcome to the API"});
 };
 
 handlers.notFound = function(data,callback){
